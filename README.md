@@ -1,54 +1,62 @@
 <div align="center">
 
-# 🛡️ EnvShield
+# EnvShield
 
-**Zero-dependency CLI tool to audit `.env` files, prevent secret leaks, and keep `.env.example` in sync.**
+**A lightweight, zero-dependency command-line utility to audit environment files, prevent credential leaks, and synchronize `.env.example` templates.**
 
-[![CI](https://github.com/bipinone/envshield/actions/workflows/ci.yml/badge.svg)](https://github.com/bipinone/envshield/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
-[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-blue.svg)](#)
+<br />
+
+[![CI](https://img.shields.io/github/actions/workflow/status/bipinone/envshield/ci.yml?branch=main&style=flat-square&label=CI&logo=github)](https://github.com/bipinone/envshield/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-black?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-black?style=flat-square&logo=node.js)](https://nodejs.org/)
+[![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-success?style=flat-square)](#)
+
+<br />
+
+[![Telegram Channel](https://img.shields.io/badge/Telegram-Channel-24A1DE?style=flat-square&logo=telegram&logoColor=white)](https://t.me/BipinOne)
+[![Telegram Group](https://img.shields.io/badge/Telegram-Community-24A1DE?style=flat-square&logo=telegram&logoColor=white)](https://t.me/BipinOneChat)
+[![Instagram](https://img.shields.io/badge/Instagram-@bipinone-E4405F?style=flat-square&logo=instagram&logoColor=white)](https://www.instagram.com/bipinone)
 
 </div>
 
 ---
 
-## ⚡ Why EnvShield?
+### Overview
 
-Every developer has faced these issues at least once:
-1. **Broken Builds / Missing Keys**: A teammate added a new environment variable in `.env` but forgot to update `.env.example`.
-2. **Accidental Leaks**: `.env` was not added to `.gitignore` and live credentials got committed to GitHub.
-3. **Manual Hassle**: Manually sanitizing 40+ lines of `.env` just to create `.env.example`.
+Managing environment variables across development, staging, and production often leads to:
+- **Desynchronized files**: Missing keys between `.env` and `.env.example` leading to runtime crashes.
+- **Accidental leaks**: Uncommitted `.gitignore` rules causing `.env` credentials to be published publicly.
+- **Exposed production tokens**: Real API keys accidentally left in example or template files.
 
-**EnvShield** solves all of this in seconds with **zero external dependencies**!
-
----
-
-## 🚀 Features
-
-- 🔍 **Instant Audit**: Detects missing keys between `.env` and `.env.example`.
-- 🚨 **Secret Leak Prevention**: Checks if `.env` is properly ignored in `.gitignore`.
-- 🔑 **Pattern Detector**: Catches live OpenAI, AWS, Stripe, Slack, and private keys exposed in public files.
-- ⚡ **Auto-Generate `.env.example`**: One command generates `.env.example` with safe dummy placeholders while keeping comments intact.
-- 📊 **Diff Utility**: Compare environment variables across environments (e.g. `.env.local` vs `.env.production`).
-- 🪶 **Zero Dependencies**: Pure Node.js standard library — runs instantly with no bloated `node_modules`.
-- 🤖 **CI/CD Ready**: Returns non-zero exit codes on errors, perfect for GitHub Actions pre-commit checks.
+**EnvShield** provides an automated, dependency-free solution to inspect, sanitize, and compare environment files directly within your terminal or CI pipeline.
 
 ---
 
-## 📦 Quick Start
+### Core Features
 
-Run directly without installing via `npx`:
+- **Automated Sync Audit**: Validates that all keys in `.env` exist in `.env.example` (and vice versa).
+- **Git Protection Check**: Ensures `.env` and local environment files are ignored by `.gitignore`.
+- **Secret Detection**: Detects live credentials (OpenAI, AWS, Stripe, Slack, private keys) before they reach version control.
+- **Template Generator**: Generates safe `.env.example` files from live `.env` configurations with sanitized placeholders.
+- **Diff Utility**: Compares variable names and values between two environment files side by side.
+- **Zero External Dependencies**: Implemented strictly with Node.js built-in modules for maximum execution speed and zero security footprint.
+- **Pipeline Compatible**: Emits standard non-zero exit codes for pre-commit hooks and GitHub Actions.
+
+---
+
+### Quick Start
+
+Run directly without installation via `npx`:
 
 ```bash
-# Check current directory
+# Audit environment configuration in current directory
 npx envshield check
 
-# Generate safe .env.example from .env
+# Automatically generate a sanitized .env.example
 npx envshield gen
 
-# Compare two env files
-npx envshield diff .env .env.example
+# Compare differences between two env files
+npx envshield diff .env.local .env.production
 ```
 
 Or install globally:
@@ -60,81 +68,102 @@ envshield --help
 
 ---
 
-## 💻 CLI Commands
+### Command Reference
 
-### 1. `check` (Default)
-Audits the current project:
-```bash
-envshield check
-```
-Sample Output:
+| Command | Syntax | Description |
+| :--- | :--- | :--- |
+| `check` | `envshield check [-d <path>]` | Audits `.env` files, detects secret leaks, and checks synchronization. *(Default)* |
+| `gen` | `envshield gen [--force]` | Generates `.env.example` from existing `.env` with masked values. |
+| `diff` | `envshield diff <file1> <file2>` | Compares keys and values across two environment files. |
+| `help` | `envshield --help` | Displays usage instructions and available parameters. |
+
+#### Flags
+
+- `-d, --dir <path>`: Specifies custom project directory (default: current working directory).
+- `-f, --force`: Overwrites existing `.env.example` during generation.
+- `-v, --version`: Displays the installed version.
+- `-h, --help`: Displays help documentation.
+
+---
+
+### CLI Terminal Output
+
 ```text
-  🛡️  EnvShield v1.0.0
+  EnvShield v1.0.0
   Smart environment file auditor, secret scanner & sync manager
 
-🔍 Scanning project at: /my-awesome-project
+  Scanning project at: /home/workspace/my-app
 
   Files detected: .env, .env.example
 
-  ✖ ISSUES FOUND:
-    • [.env] Key 'REDIS_URL' required by .env.example is missing in .env
-    • [.env.example] Potential live Stripe Secret Key found in example file for key 'STRIPE_KEY'!
+  ISSUES FOUND:
+  • [.env] Key 'DATABASE_URL' required by .env.example is missing in .env
+  • [.env.example] Potential live Stripe API Key found in example file for key 'STRIPE_SECRET'!
 
-  ⚠ WARNINGS:
-    • [.env.example] Key 'DATABASE_URL' is defined in .env but missing in .env.example
+  WARNINGS:
+  • [.env.example] Key 'CACHE_TTL' is defined in .env but missing in .env.example
 
   Audit failed. Please fix the critical issues above.
 ```
 
-### 2. `generate` (or `gen`)
-Automatically parses your `.env` and creates `.env.example` with masked secrets:
-```bash
-envshield gen
-# Overwrite existing example file
-envshield gen --force
-```
-
-### 3. `diff <file1> <file2>`
-Shows side-by-side key differences between two environments:
-```bash
-envshield diff .env.development .env.production
-```
-
 ---
 
-## 🤖 GitHub Actions Integration
+### CI/CD Integration (GitHub Actions)
 
-Prevent broken deployments and secret leaks before merging pull requests. Add this to `.github/workflows/env-check.yml`:
+Add this workflow to `.github/workflows/env-check.yml` to automatically prevent broken configurations from being merged:
 
 ```yaml
-name: Env Audit
+name: Environment Audit
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
 jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Run EnvShield
+
+      - name: Run EnvShield Audit
         run: npx envshield check
 ```
 
 ---
 
-## 🧪 Running Tests
+### Development & Testing
 
-EnvShield uses Node's native test runner (`node:test`):
+EnvShield uses Node.js native test runner (`node:test`):
 
 ```bash
+# Clone the repository
+git clone git@github.com:bipinone/envshield.git
+cd envshield
+
+# Run test suite
 npm test
 ```
 
 ---
 
-## 📄 License
+### Connect & Community
 
-This project is licensed under the [MIT License](LICENSE).
+For updates, questions, and discussions, feel free to join the community channels:
+
+- **Telegram Updates**: [@BipinOne](https://t.me/BipinOne)
+- **Telegram Discussion**: [@BipinOneChat](https://t.me/BipinOneChat)
+- **Instagram**: [@bipinone](https://www.instagram.com/bipinone)
+
+---
+
+### License
+
+Distributed under the [MIT License](LICENSE).
