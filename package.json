@@ -1,6 +1,6 @@
 {
   "name": "@bipinone/envshield",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-dependency CLI tool to audit .env files, prevent secrets leak, and keep .env.example in sync.",
   "main": "src/index.js",
   "bin": {
