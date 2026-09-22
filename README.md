@@ -6,6 +6,7 @@
 
 <br />
 
+[![NPM Version](https://img.shields.io/npm/v/@bipinone/envshield?style=flat-square&color=CB3837&logo=npm)](https://www.npmjs.com/package/@bipinone/envshield)
 [![CI](https://img.shields.io/github/actions/workflow/status/bipinone/envshield/ci.yml?branch=main&style=flat-square&label=CI&logo=github)](https://github.com/bipinone/envshield/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-black?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-%3E%3D18.0.0-black?style=flat-square&logo=node.js)](https://nodejs.org/)
@@ -46,23 +47,23 @@ Managing environment variables across development, staging, and production often
 
 ### Quick Start
 
-Run directly from GitHub without installation via `npx`:
+Run directly via `npx` (no installation required):
 
 ```bash
 # Audit environment configuration in current directory
-npx github:bipinone/envshield check
+npx @bipinone/envshield check
 
 # Automatically generate a sanitized .env.example
-npx github:bipinone/envshield gen
+npx @bipinone/envshield gen
 
 # Compare differences between two env files
-npx github:bipinone/envshield diff .env.local .env.production
+npx @bipinone/envshield diff .env.local .env.production
 ```
 
 Or install globally:
 
 ```bash
-npm install -g envshield
+npm install -g @bipinone/envshield
 envshield --help
 ```
 
