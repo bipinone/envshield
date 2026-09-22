@@ -1,0 +1,35 @@
+{
+  "name": "envshield",
+  "version": "1.0.0",
+  "description": "🛡️ Zero-dependency CLI tool to audit .env files, prevent secrets leak, and keep .env.example in sync.",
+  "main": "src/index.js",
+  "bin": {
+    "envshield": "./bin/cli.js"
+  },
+  "scripts": {
+    "start": "node ./bin/cli.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": [
+    "dotenv",
+    "env",
+    "security",
+    "linter",
+    "secret-scanner",
+    "cli",
+    "developer-tools",
+    "devops",
+    "zero-dependencies"
+  ],
+  "author": "Your Name <you@example.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "README.md",
+    "LICENSE"
+  ]
+}
