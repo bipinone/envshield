@@ -80,9 +80,24 @@ envshield --help
 #### Flags
 
 - `-d, --dir <path>`: Specifies custom project directory (default: current working directory).
+- `--fix`: Automatically repairs missing `.env` exclusion rules in `.gitignore`.
+- `--json`: Formats audit output into clean JSON for machine parsing and CI/CD pipelines.
+- `--strict`: Treats warnings as blocking errors (exits with code 1).
 - `-f, --force`: Overwrites existing `.env.example` during generation.
 - `-v, --version`: Displays the installed version.
 - `-h, --help`: Displays help documentation.
+
+---
+
+### Platform Support
+
+EnvShield is natively tested and verified across all major operating systems:
+
+| Operating System | Support | Architecture |
+| :--- | :--- | :--- |
+| **Linux** (Ubuntu, Debian, Fedora, Arch) | Supported | x64, arm64 |
+| **macOS** (Apple Silicon M1/M2/M3 & Intel) | Supported | arm64, x64 |
+| **Windows** (Command Prompt, PowerShell, Windows Terminal) | Supported | x64 |
 
 ---
 

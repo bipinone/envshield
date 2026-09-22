@@ -12,7 +12,7 @@ const pkg = require('../package.json');
 function printBanner() {
   console.log(`
   ${c.cyan(c.bold('🛡️  EnvShield'))} ${c.dim(`v${pkg.version}`)}
-  ${c.dim('Smart environment file auditor, secret scanner & sync manager')}
+  ${c.dim('Smart environment auditor, secret scanner & sync manager')}
 `);
 }
 
@@ -23,29 +23,42 @@ ${c.bold('USAGE:')}
   ${c.green('envshield')} [command] [options]
 
 ${c.bold('COMMANDS:')}
-  ${c.green('check')}               Audit .env and .env.example files in current directory ${c.dim('(default)')}
+  ${c.green('check')}               Audit environment files in target project ${c.dim('(default)')}
   ${c.green('generate, gen')}       Create safe .env.example from existing .env automatically
   ${c.green('diff <file1> <file2>')} Compare keys and values between two environment files
   ${c.green('help')}                Show this help message
 
 ${c.bold('OPTIONS:')}
   ${c.cyan('-d, --dir <path>')}     Specify project directory (defaults to current dir)
+  ${c.cyan('--fix')}                Automatically repair missing .gitignore rules
+  ${c.cyan('--json')}               Output audit results in JSON format (for CI/CD pipelines)
+  ${c.cyan('--strict')}             Treat warnings as errors (exits with 1)
   ${c.cyan('-f, --force')}          Overwrite existing .env.example when generating
   ${c.cyan('-v, --version')}        Show version
   ${c.cyan('-h, --help')}           Show help
 
 ${c.bold('EXAMPLES:')}
   $ npx envshield check
-  $ npx envshield gen
+  $ npx envshield check --fix
+  $ npx envshield check --json
+  $ npx envshield gen --force
   $ npx envshield diff .env.local .env.production
 `);
 }
 
-function runCheck(projectDir) {
+function runCheck(projectDir, flags) {
+  const results = validateProject(projectDir, { fix: flags.fix });
+
+  if (flags.json) {
+    console.log(JSON.stringify(results, null, 2));
+    if (results.errors.length > 0 || (flags.strict && results.warnings.length > 0)) {
+      process.exit(1);
+    }
+    process.exit(0);
+  }
+
   printBanner();
   console.log(`${c.dim('🔍 Scanning project at:')} ${c.bold(projectDir)}\n`);
-
-  const results = validateProject(projectDir);
 
   if (results.filesFound.length > 0) {
     console.log(`  ${c.dim('Files detected:')} ${results.filesFound.map((f) => c.cyan(f)).join(', ')}\n`);
@@ -53,6 +66,14 @@ function runCheck(projectDir) {
 
   let hasErrors = results.errors.length > 0;
   let hasWarnings = results.warnings.length > 0;
+
+  if (results.info && results.info.length > 0) {
+    console.log(`${c.green(c.bold('  ✔ AUTO-FIXES APPLIED:'))}`);
+    results.info.forEach((item) => {
+      console.log(`    ${c.green('•')} ${item.message}`);
+    });
+    console.log('');
+  }
 
   if (results.errors.length > 0) {
     console.log(`${c.red(c.bold('  ✖ ISSUES FOUND:'))}`);
@@ -73,10 +94,13 @@ function runCheck(projectDir) {
   }
 
   if (!hasErrors && !hasWarnings) {
-    console.log(`${c.green('  ✔ All checks passed!')} Your environment files are in sync & safe.\n`);
+    console.log(`${c.green('  ✔ All checks passed!')} Your environment files are in sync & secure.\n`);
     process.exit(0);
   } else if (hasErrors) {
     console.log(`${c.red('  Audit failed.')} Please fix the critical issues above.\n`);
+    process.exit(1);
+  } else if (flags.strict && hasWarnings) {
+    console.log(`${c.red('  Audit failed in strict mode due to warnings.')}\n`);
     process.exit(1);
   } else {
     console.log(`${c.yellow('  Audit finished with warnings.')}\n`);
@@ -175,14 +199,17 @@ function main() {
   }
 
   const flags = {
-    force: args.includes('-f') || args.includes('--force')
+    force: args.includes('-f') || args.includes('--force'),
+    fix: args.includes('--fix'),
+    json: args.includes('--json'),
+    strict: args.includes('--strict')
   };
 
   const command = args[0] && !args[0].startsWith('-') ? args[0] : 'check';
 
   switch (command) {
     case 'check':
-      runCheck(projectDir);
+      runCheck(projectDir, flags);
       break;
     case 'gen':
     case 'generate':

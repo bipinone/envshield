@@ -98,4 +98,27 @@ STRIPE_SECRET_KEY=my_mock_stripe_key_val
     assert.ok(results.errors.some((e) => e.type === 'MISSING_IN_ENV'));
     assert.ok(results.warnings.some((w) => w.type === 'MISSING_IN_EXAMPLE'));
   });
+
+  test('validateVariableValue: flags malformed ports, booleans and URLs', () => {
+    const { validateVariableValue } = require('../src/validator');
+    assert.ok(validateVariableValue('PORT', '99999').length > 0);
+    assert.ok(validateVariableValue('PORT', 'abc').length > 0);
+    assert.strictEqual(validateVariableValue('PORT', '3000').length, 0);
+
+    assert.ok(validateVariableValue('DEBUG', 'not-a-bool').length > 0);
+    assert.strictEqual(validateVariableValue('DEBUG', 'true').length, 0);
+
+    assert.ok(validateVariableValue('DATABASE_URL', 'localhost:5432').length > 0);
+    assert.strictEqual(validateVariableValue('DATABASE_URL', 'postgresql://localhost:5432').length, 0);
+  });
+
+  test('fixGitIgnore: repairs missing .gitignore rules', () => {
+    const { fixGitIgnore, checkGitIgnore } = require('../src/validator');
+    const fixDir = path.join(tmpDir, 'fix-test');
+    fs.mkdirSync(fixDir);
+
+    fixGitIgnore(fixDir);
+    const check = checkGitIgnore(fixDir);
+    assert.strictEqual(check.isEnvIgnored, true);
+  });
 });

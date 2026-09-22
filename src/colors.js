@@ -1,11 +1,20 @@
-// Lightweight ANSI color helpers for terminal output (Zero dependencies)
-const isColorSupported = !process.env.NO_COLOR && (process.stdout.isTTY || process.env.FORCE_COLOR);
+// Cross-platform ANSI color helpers with smart terminal detection (Zero dependencies)
+const isWindows = process.platform === 'win32';
+const isColorSupported = Boolean(
+  !process.env.NO_COLOR &&
+  (
+    process.env.FORCE_COLOR ||
+    process.stdout.isTTY ||
+    (isWindows && (process.env.WT_SESSION || process.env.ConEmuANSI === 'ON' || process.env.TERM_PROGRAM))
+  )
+);
 
 function color(open, close) {
   return (str) => (isColorSupported ? `\x1b[${open}m${str}\x1b[${close}m` : String(str));
 }
 
 module.exports = {
+  isColorSupported,
   reset: color(0, 0),
   bold: color(1, 22),
   dim: color(2, 22),
