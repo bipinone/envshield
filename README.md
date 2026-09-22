@@ -46,17 +46,17 @@ Managing environment variables across development, staging, and production often
 
 ### Quick Start
 
-Run directly without installation via `npx`:
+Run directly from GitHub without installation via `npx`:
 
 ```bash
 # Audit environment configuration in current directory
-npx envshield check
+npx github:bipinone/envshield check
 
 # Automatically generate a sanitized .env.example
-npx envshield gen
+npx github:bipinone/envshield gen
 
 # Compare differences between two env files
-npx envshield diff .env.local .env.production
+npx github:bipinone/envshield diff .env.local .env.production
 ```
 
 Or install globally:
