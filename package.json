@@ -1,14 +1,18 @@
 {
-  "name": "envshield",
+  "name": "@bipinone/envshield",
   "version": "1.0.0",
-  "description": "🛡️ Zero-dependency CLI tool to audit .env files, prevent secrets leak, and keep .env.example in sync.",
+  "description": "Zero-dependency CLI tool to audit .env files, prevent secrets leak, and keep .env.example in sync.",
   "main": "src/index.js",
   "bin": {
-    "envshield": "./bin/cli.js"
+    "envshield": "bin/cli.js"
   },
   "scripts": {
     "start": "node ./bin/cli.js",
     "test": "node --test tests/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bipinone/envshield.git"
   },
   "keywords": [
     "dotenv",
@@ -21,8 +25,12 @@
     "devops",
     "zero-dependencies"
   ],
-  "author": "Your Name <you@example.com>",
+  "author": "Bipin One <bipinone.com@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bipinone/envshield/issues"
+  },
+  "homepage": "https://github.com/bipinone/envshield#readme",
   "engines": {
     "node": ">=18.0.0"
   },
